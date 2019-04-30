@@ -206,6 +206,9 @@ gboolean nm_setting_wireguard_get_peer_routes (NMSettingWireGuard *self);
 NM_AVAILABLE_IN_1_16
 guint32 nm_setting_wireguard_get_mtu (NMSettingWireGuard *self);
 
+NM_AVAILABLE_IN_1_20
+NMTernary nm_setting_wireguard_get_simple_policy_routing (NMSettingWireGuard *self);
+
 /*****************************************************************************/
 
 G_END_DECLS
