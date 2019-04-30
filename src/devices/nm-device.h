@@ -331,6 +331,11 @@ typedef struct _NMDeviceClass {
 
 	guint32     (*get_configured_mtu) (NMDevice *self, NMDeviceMtuSource *out_source);
 
+	guint32     (*coerce_route_table) (NMDevice *self,
+	                                   int addr_family,
+	                                   guint32 route_table,
+	                                   gboolean is_user_config);
+
 	const char *(*get_auto_ip_config_method) (NMDevice *self, int addr_family);
 
 	/* Checks whether the connection is compatible with the device using
