@@ -36,6 +36,7 @@
 #include "platform/nm-platform.h"
 #include "nm-dhcp-client-logging.h"
 #include "systemd/nm-sd.h"
+#include "systemd/nm-sd-utils-dhcp.h"
 
 /*****************************************************************************/
 
@@ -80,6 +81,37 @@ G_DEFINE_TYPE (NMDhcpSystemd, nm_dhcp_systemd, NM_TYPE_DHCP_CLIENT)
 
 #define DHCP_OPTION_NIS_DOMAIN                40
 #define DHCP_OPTION_NIS_SERVERS               41
+#define DHCP_OPTION_PRIVATE_224  SD_DHCP_OPTION_PRIVATE_BASE
+#define DHCP_OPTION_PRIVATE_225              225
+#define DHCP_OPTION_PRIVATE_226              226
+#define DHCP_OPTION_PRIVATE_227              227
+#define DHCP_OPTION_PRIVATE_228              228
+#define DHCP_OPTION_PRIVATE_229              229
+#define DHCP_OPTION_PRIVATE_230              230
+#define DHCP_OPTION_PRIVATE_231              231
+#define DHCP_OPTION_PRIVATE_232              232
+#define DHCP_OPTION_PRIVATE_233              233
+#define DHCP_OPTION_PRIVATE_234              234
+#define DHCP_OPTION_PRIVATE_235              235
+#define DHCP_OPTION_PRIVATE_236              236
+#define DHCP_OPTION_PRIVATE_237              237
+#define DHCP_OPTION_PRIVATE_238              238
+#define DHCP_OPTION_PRIVATE_239              239
+#define DHCP_OPTION_PRIVATE_240              240
+#define DHCP_OPTION_PRIVATE_241              241
+#define DHCP_OPTION_PRIVATE_242              242
+#define DHCP_OPTION_PRIVATE_243              243
+#define DHCP_OPTION_PRIVATE_244              244
+#define DHCP_OPTION_PRIVATE_245              245
+#define DHCP_OPTION_PRIVATE_246              246
+#define DHCP_OPTION_PRIVATE_247              247
+#define DHCP_OPTION_PRIVATE_248              248
+#define DHCP_OPTION_PRIVATE_249  SD_DHCP_OPTION_PRIVATE_CLASSLESS_STATIC_ROUTE
+#define DHCP_OPTION_PRIVATE_250              250
+#define DHCP_OPTION_PRIVATE_251              251
+#define DHCP_OPTION_PRIVATE_252  SD_DHCP_OPTION_PRIVATE_PROXY_AUTODISCOVERY
+#define DHCP_OPTION_PRIVATE_253              253
+#define DHCP_OPTION_PRIVATE_254  SD_DHCP_OPTION_PRIVATE_LAST
 
 /* Internal values */
 #define DHCP_OPTION_IP_ADDRESS       1024
@@ -137,6 +169,37 @@ static const ReqOption dhcp4_requests[] = {
 	REQ (SD_DHCP_OPTION_RENEWAL_T1_TIME,                "dhcp_renewal_time",               FALSE ),
 	REQ (SD_DHCP_OPTION_REBINDING_T2_TIME,              "dhcp_rebinding_time",             FALSE ),
 	REQ (SD_DHCP_OPTION_NEW_TZDB_TIMEZONE,              "tcode",                           FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_224,                       "unknown_224",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_225,                       "unknown_225",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_226,                       "unknown_226",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_227,                       "unknown_227",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_228,                       "unknown_228",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_229,                       "unknown_229",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_230,                       "unknown_230",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_231,                       "unknown_231",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_232,                       "unknown_232",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_233,                       "unknown_233",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_234,                       "unknown_234",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_235,                       "unknown_235",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_236,                       "unknown_236",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_237,                       "unknown_237",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_238,                       "unknown_238",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_239,                       "unknown_239",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_240,                       "unknown_240",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_241,                       "unknown_241",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_242,                       "unknown_242",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_243,                       "unknown_243",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_244,                       "unknown_244",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_245,                       "unknown_245",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_246,                       "unknown_246",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_247,                       "unknown_247",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_248,                       "unknown_248",                     FALSE ),
+	/* DHCP_OPTION_PRIVATE_249 = SD_DHCP_OPTION_PRIVATE_CLASSLESS_STATIC_ROUTE */
+	REQ (DHCP_OPTION_PRIVATE_250,                       "unknown_250",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_251,                       "unknown_251",                     FALSE ),
+	/* DHCP_OPTION_PRIVATE_252 = SD_DHCP_OPTION_PRIVATE_PROXY_AUTODISCOVERY */
+	REQ (DHCP_OPTION_PRIVATE_253,                       "unknown_253",                     FALSE ),
+	REQ (DHCP_OPTION_PRIVATE_254,                       "unknown_254",                     FALSE ),
 
 	/* Internal values */
 	REQ (DHCP_OPTION_IP_ADDRESS,                        "ip_address",                      FALSE ),
@@ -281,6 +344,7 @@ lease_to_ip4_config (NMDedupMultiIndex *multi_idx,
 	guint32 a_lifetime;
 	guint32 renewal;
 	guint32 rebinding;
+	gs_free nm_sd_dhcp_option *private_options = NULL;
 
 	g_return_val_if_fail (lease != NULL, NULL);
 
@@ -625,6 +689,27 @@ lease_to_ip4_config (NMDedupMultiIndex *multi_idx,
 		metered = !!memmem (data, data_len, "ANDROID_METERED", NM_STRLEN ("ANDROID_METERED"));
 	nm_ip4_config_set_metered (ip4_config, metered);
 
+	num =  nm_sd_dhcp_lease_get_private_options (lease, &private_options);
+	if (num > 0) {
+		for (i = 0; i < num; i++) {
+			char *option_string;
+
+			option_string = nm_utils_bin2hexstr_full (private_options[i].data,
+			                                          private_options[i].data_len,
+			                                          ':', FALSE, NULL);
+			LOG_LEASE (LOGD_DHCP4, "%s '%s'",
+			           request_string (dhcp4_requests, private_options[i].code),
+			           option_string);
+			if (!options) {
+				g_free (option_string);
+				continue;
+			}
+			take_option (options,
+			             dhcp4_requests,
+			             private_options[i].code,
+			             option_string);
+		}
+	}
 	NM_SET_OUT (out_options, g_steal_pointer (&options));
 	return g_steal_pointer (&ip4_config);
 }
