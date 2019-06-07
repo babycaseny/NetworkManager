@@ -27,6 +27,7 @@
 #include "nm-glib-aux/nm-dedup-multi.h"
 
 #include "nm-dhcp-utils.h"
+#include "nm-dhcp-options.h"
 #include "nm-ip4-config.h"
 #include "nm-utils.h"
 #include "platform/nm-platform.h"
@@ -122,10 +123,11 @@ add_hostname4 (GString *str, const char *hostname, gboolean use_fqdn)
 static void
 add_ip4_config (GString *str, GBytes *client_id, const char *hostname, gboolean use_fqdn)
 {
+	guint i;
+
 	if (client_id) {
 		const char *p;
 		gsize l;
-		guint i;
 
 		p = g_bytes_get_data (client_id, &l);
 		g_assert (p);
@@ -161,12 +163,26 @@ add_ip4_config (GString *str, GBytes *client_id, const char *hostname, gboolean 
 	g_string_append_c (str, '\n');
 
 	/* Define options for classless static routes */
-	g_string_append (str,
-	                 "option rfc3442-classless-static-routes code 121 = array of unsigned integer 8;\n");
-	g_string_append (str,
-	                 "option ms-classless-static-routes code 249 = array of unsigned integer 8;\n");
-	/* Web Proxy Auto-Discovery option (bgo #368423) */
-	g_string_append (str, "option wpad code 252 = string;\n");
+	g_string_append_printf (str, "option %s code %u = array of unsigned integer 8;\n",
+	                        request_string (dhcp4_requests, DHCP_OPTION_CLASSLESS_STATIC_ROUTE),
+	                        DHCP_OPTION_CLASSLESS_STATIC_ROUTE);
+
+	/* Redefine private options to have more meaningful names */
+	for (i = DHCP_OPTION_PRIVATE_224; i < DHCP_OPTION_PRIVATE_PROXY_AUTODISCOVERY; i++) {
+		g_string_append_printf (str, "option %s code %u = array of unsigned integer 8;\n",
+		                        request_string (dhcp4_requests, i), i);
+	}
+	/* Web Proxy Auto-Discovery option (bgo #368423) - option code 252, print as string */
+	g_string_append_printf (str, "option %s code %u = string;\n",
+	                        request_string (dhcp4_requests, DHCP_OPTION_PRIVATE_PROXY_AUTODISCOVERY),
+	                        DHCP_OPTION_PRIVATE_PROXY_AUTODISCOVERY);
+
+	g_string_append_printf (str, "option %s code %u = array of unsigned integer 8;\n",
+	                        request_string (dhcp4_requests, DHCP_OPTION_PRIVATE_253),
+	                        DHCP_OPTION_PRIVATE_253);
+	g_string_append_printf (str, "option %s code %u = array of unsigned integer 8;\n",
+	                        request_string (dhcp4_requests, DHCP_OPTION_PRIVATE_254),
+	                        DHCP_OPTION_PRIVATE_254);
 
 	g_string_append_c (str, '\n');
 }

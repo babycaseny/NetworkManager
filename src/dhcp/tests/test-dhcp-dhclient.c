@@ -88,14 +88,46 @@ test_config (const char *orig,
 		g_assert (new_client_id == NULL);
 }
 
+#define DHCLIENT_OPTIONS_REDEFINITION \
+	"option rfc3442_classless_static_routes code 121 = array of unsigned integer 8;\n" \
+	"option private_224 code 224 = array of unsigned integer 8;\n" \
+	"option private_225 code 225 = array of unsigned integer 8;\n" \
+	"option private_226 code 226 = array of unsigned integer 8;\n" \
+	"option private_227 code 227 = array of unsigned integer 8;\n" \
+	"option private_228 code 228 = array of unsigned integer 8;\n" \
+	"option private_229 code 229 = array of unsigned integer 8;\n" \
+	"option private_230 code 230 = array of unsigned integer 8;\n" \
+	"option private_231 code 231 = array of unsigned integer 8;\n" \
+	"option private_232 code 232 = array of unsigned integer 8;\n" \
+	"option private_233 code 233 = array of unsigned integer 8;\n" \
+	"option private_234 code 234 = array of unsigned integer 8;\n" \
+	"option private_235 code 235 = array of unsigned integer 8;\n" \
+	"option private_236 code 236 = array of unsigned integer 8;\n" \
+	"option private_237 code 237 = array of unsigned integer 8;\n" \
+	"option private_238 code 238 = array of unsigned integer 8;\n" \
+	"option private_239 code 239 = array of unsigned integer 8;\n" \
+	"option private_240 code 240 = array of unsigned integer 8;\n" \
+	"option private_241 code 241 = array of unsigned integer 8;\n" \
+	"option private_242 code 242 = array of unsigned integer 8;\n" \
+	"option private_243 code 243 = array of unsigned integer 8;\n" \
+	"option private_244 code 244 = array of unsigned integer 8;\n" \
+	"option private_245 code 245 = array of unsigned integer 8;\n" \
+	"option private_246 code 246 = array of unsigned integer 8;\n" \
+	"option private_247 code 247 = array of unsigned integer 8;\n" \
+	"option private_248 code 248 = array of unsigned integer 8;\n" \
+	"option ms_classless_static_routes code 249 = array of unsigned integer 8;\n" \
+	"option private_250 code 250 = array of unsigned integer 8;\n" \
+	"option private_251 code 251 = array of unsigned integer 8;\n" \
+	"option wpad code 252 = string;\n" \
+	"option private_253 code 253 = array of unsigned integer 8;\n" \
+	"option private_254 code 254 = array of unsigned integer 8;\n"
+
 /*****************************************************************************/
 
 static const char *orig_missing_expected = \
 	"# Created by NetworkManager\n"
 	"\n\n"
-	"option rfc3442-classless-static-routes code 121 = array of unsigned integer 8;\n"
-	"option ms-classless-static-routes code 249 = array of unsigned integer 8;\n"
-	"option wpad code 252 = string;\n"
+	DHCLIENT_OPTIONS_REDEFINITION
 	"\n"
 	"also request rfc3442-classless-static-routes;\n"
 	"also request ms-classless-static-routes;\n"
@@ -122,9 +154,7 @@ static const char *override_client_id_expected = \
 	"\n"
 	"send dhcp-client-identifier 11:22:33:44:55:66; # added by NetworkManager\n"
 	"\n"
-	"option rfc3442-classless-static-routes code 121 = array of unsigned integer 8;\n"
-	"option ms-classless-static-routes code 249 = array of unsigned integer 8;\n"
-	"option wpad code 252 = string;\n"
+	DHCLIENT_OPTIONS_REDEFINITION
 	"\n"
 	"also request rfc3442-classless-static-routes;\n"
 	"also request ms-classless-static-routes;\n"
@@ -152,9 +182,7 @@ static const char *quote_client_id_expected = \
 	"\n"
 	"send dhcp-client-identifier \"\\x00abcd\"; # added by NetworkManager\n"
 	"\n"
-	"option rfc3442-classless-static-routes code 121 = array of unsigned integer 8;\n"
-	"option ms-classless-static-routes code 249 = array of unsigned integer 8;\n"
-	"option wpad code 252 = string;\n"
+	DHCLIENT_OPTIONS_REDEFINITION
 	"\n"
 	"also request rfc3442-classless-static-routes;\n"
 	"also request ms-classless-static-routes;\n"
@@ -182,9 +210,7 @@ static const char *quote_client_id_expected_2 = \
 	"\n"
 	"send dhcp-client-identifier 00:61:5c:62:63; # added by NetworkManager\n"
 	"\n"
-	"option rfc3442-classless-static-routes code 121 = array of unsigned integer 8;\n"
-	"option ms-classless-static-routes code 249 = array of unsigned integer 8;\n"
-	"option wpad code 252 = string;\n"
+	DHCLIENT_OPTIONS_REDEFINITION
 	"\n"
 	"also request rfc3442-classless-static-routes;\n"
 	"also request ms-classless-static-routes;\n"
@@ -212,9 +238,7 @@ static const char *hex_zero_client_id_expected = \
 	"\n"
 	"send dhcp-client-identifier 00:11:22:33; # added by NetworkManager\n"
 	"\n"
-	"option rfc3442-classless-static-routes code 121 = array of unsigned integer 8;\n"
-	"option ms-classless-static-routes code 249 = array of unsigned integer 8;\n"
-	"option wpad code 252 = string;\n"
+	DHCLIENT_OPTIONS_REDEFINITION
 	"\n"
 	"also request rfc3442-classless-static-routes;\n"
 	"also request ms-classless-static-routes;\n"
@@ -242,9 +266,7 @@ static const char *ascii_client_id_expected = \
 	"\n"
 	"send dhcp-client-identifier \"\\x00qb:cd:ef:12:34:56\"; # added by NetworkManager\n"
 	"\n"
-	"option rfc3442-classless-static-routes code 121 = array of unsigned integer 8;\n"
-	"option ms-classless-static-routes code 249 = array of unsigned integer 8;\n"
-	"option wpad code 252 = string;\n"
+	DHCLIENT_OPTIONS_REDEFINITION
 	"\n"
 	"also request rfc3442-classless-static-routes;\n"
 	"also request ms-classless-static-routes;\n"
@@ -272,9 +294,7 @@ static const char *hex_single_client_id_expected = \
 	"\n"
 	"send dhcp-client-identifier ab:cd:0e:12:34:56; # added by NetworkManager\n"
 	"\n"
-	"option rfc3442-classless-static-routes code 121 = array of unsigned integer 8;\n"
-	"option ms-classless-static-routes code 249 = array of unsigned integer 8;\n"
-	"option wpad code 252 = string;\n"
+	DHCLIENT_OPTIONS_REDEFINITION
 	"\n"
 	"also request rfc3442-classless-static-routes;\n"
 	"also request ms-classless-static-routes;\n"
@@ -306,9 +326,7 @@ static const char *existing_hex_client_id_expected = \
 	"\n"
 	"send dhcp-client-identifier 10:30:04:20:7A:08;\n"
 	"\n"
-	"option rfc3442-classless-static-routes code 121 = array of unsigned integer 8;\n"
-	"option ms-classless-static-routes code 249 = array of unsigned integer 8;\n"
-	"option wpad code 252 = string;\n"
+	DHCLIENT_OPTIONS_REDEFINITION
 	"\n"
 	"also request rfc3442-classless-static-routes;\n"
 	"also request ms-classless-static-routes;\n"
@@ -344,9 +362,7 @@ static const char *existing_escaped_client_id_expected = \
 	"\n"
 	"send dhcp-client-identifier \"\\044test\\xfe\";\n"
 	"\n"
-	"option rfc3442-classless-static-routes code 121 = array of unsigned integer 8;\n"
-	"option ms-classless-static-routes code 249 = array of unsigned integer 8;\n"
-	"option wpad code 252 = string;\n"
+	DHCLIENT_OPTIONS_REDEFINITION
 	"\n"
 	"also request rfc3442-classless-static-routes;\n"
 	"also request ms-classless-static-routes;\n"
@@ -383,9 +399,7 @@ static const char *existing_ascii_client_id_expected = \
 	"\n"
 	"send dhcp-client-identifier \"\\x00" EACID "\";\n"
 	"\n"
-	"option rfc3442-classless-static-routes code 121 = array of unsigned integer 8;\n"
-	"option ms-classless-static-routes code 249 = array of unsigned integer 8;\n"
-	"option wpad code 252 = string;\n"
+	DHCLIENT_OPTIONS_REDEFINITION
 	"\n"
 	"also request rfc3442-classless-static-routes;\n"
 	"also request ms-classless-static-routes;\n"
@@ -419,9 +433,7 @@ static const char *fqdn_expected = \
 	"send fqdn.encoded on;\n"
 	"send fqdn.server-update on;\n"
 	"\n"
-	"option rfc3442-classless-static-routes code 121 = array of unsigned integer 8;\n"
-	"option ms-classless-static-routes code 249 = array of unsigned integer 8;\n"
-	"option wpad code 252 = string;\n"
+	DHCLIENT_OPTIONS_REDEFINITION
 	"\n"
 	"also request rfc3442-classless-static-routes;\n"
 	"also request ms-classless-static-routes;\n"
@@ -455,9 +467,7 @@ static const char *fqdn_options_override_expected = \
 	"send fqdn.encoded on;\n"
 	"send fqdn.server-update on;\n"
 	"\n"
-	"option rfc3442-classless-static-routes code 121 = array of unsigned integer 8;\n"
-	"option ms-classless-static-routes code 249 = array of unsigned integer 8;\n"
-	"option wpad code 252 = string;\n"
+	DHCLIENT_OPTIONS_REDEFINITION
 	"\n"
 	"also request rfc3442-classless-static-routes;\n"
 	"also request ms-classless-static-routes;\n"
@@ -493,9 +503,7 @@ static const char *override_hostname_expected = \
 	"\n"
 	"send host-name \"blahblah\"; # added by NetworkManager\n"
 	"\n"
-	"option rfc3442-classless-static-routes code 121 = array of unsigned integer 8;\n"
-	"option ms-classless-static-routes code 249 = array of unsigned integer 8;\n"
-	"option wpad code 252 = string;\n"
+	DHCLIENT_OPTIONS_REDEFINITION
 	"\n"
 	"also request rfc3442-classless-static-routes;\n"
 	"also request ms-classless-static-routes;\n"
@@ -580,9 +588,7 @@ static const char *existing_alsoreq_expected = \
 	"# Created by NetworkManager\n"
 	"# Merged from /path/to/dhclient.conf\n"
 	"\n\n"
-	"option rfc3442-classless-static-routes code 121 = array of unsigned integer 8;\n"
-	"option ms-classless-static-routes code 249 = array of unsigned integer 8;\n"
-	"option wpad code 252 = string;\n"
+	DHCLIENT_OPTIONS_REDEFINITION
 	"\n"
 	"also request something;\n"
 	"also request another-thing;\n"
@@ -618,9 +624,7 @@ static const char *existing_req_expected = \
 	"# Created by NetworkManager\n"
 	"# Merged from /path/to/dhclient.conf\n"
 	"\n\n"
-	"option rfc3442-classless-static-routes code 121 = array of unsigned integer 8;\n"
-	"option ms-classless-static-routes code 249 = array of unsigned integer 8;\n"
-	"option wpad code 252 = string;\n"
+	DHCLIENT_OPTIONS_REDEFINITION
 	"\n"
 	"request; # override dhclient defaults\n"
 	"also request another-thing;\n"
@@ -655,9 +659,7 @@ static const char *existing_multiline_alsoreq_expected = \
 	"# Created by NetworkManager\n"
 	"# Merged from /path/to/dhclient.conf\n"
 	"\n\n"
-	"option rfc3442-classless-static-routes code 121 = array of unsigned integer 8;\n"
-	"option ms-classless-static-routes code 249 = array of unsigned integer 8;\n"
-	"option wpad code 252 = string;\n"
+	DHCLIENT_OPTIONS_REDEFINITION
 	"\n"
 	"also request something;\n"
 	"also request another-thing;\n"
@@ -898,9 +900,7 @@ static const char *interface1_expected = \
 	"\n"
 	"initial-delay 5;\n"
 	"\n"
-	"option rfc3442-classless-static-routes code 121 = array of unsigned integer 8;\n"
-	"option ms-classless-static-routes code 249 = array of unsigned integer 8;\n"
-	"option wpad code 252 = string;\n"
+	DHCLIENT_OPTIONS_REDEFINITION
 	"\n"
 	"also request my-option;\n"
 	"also request yet-another-option;\n"
@@ -943,9 +943,7 @@ static const char *interface2_expected = \
 	"\n"
 	"initial-delay 0;\n"
 	"\n"
-	"option rfc3442-classless-static-routes code 121 = array of unsigned integer 8;\n"
-	"option ms-classless-static-routes code 249 = array of unsigned integer 8;\n"
-	"option wpad code 252 = string;\n"
+	DHCLIENT_OPTIONS_REDEFINITION
 	"\n"
 	"request; # override dhclient defaults\n"
 	"also request another-option;\n"
@@ -1034,9 +1032,7 @@ test_structured (void)
 		"send dhcp-lease-time 8086;\n"
 		"require subnet-mask;\n"
 		"\n"
-		"option rfc3442-classless-static-routes code 121 = array of unsigned integer 8;\n"
-		"option ms-classless-static-routes code 249 = array of unsigned integer 8;\n"
-		"option wpad code 252 = string;\n"
+		DHCLIENT_OPTIONS_REDEFINITION
 		"\n"
 		"request; # override dhclient defaults\n"
 		"also request subnet-mask;\n"
@@ -1080,9 +1076,7 @@ test_config_req_intf (void)
 		"# Merged from /path/to/dhclient.conf\n"
 		"\n"
 		"\n"
-		"option rfc3442-classless-static-routes code 121 = array of unsigned integer 8;\n"
-		"option ms-classless-static-routes code 249 = array of unsigned integer 8;\n"
-		"option wpad code 252 = string;\n"
+		DHCLIENT_OPTIONS_REDEFINITION
 		"\n"
 		"request; # override dhclient defaults\n"
 		"also request subnet-mask;\n"
