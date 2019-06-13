@@ -14,7 +14,7 @@
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
- * (C) Copyright 2010 Red Hat, Inc.
+ * (C) Copyright 2010 - 2018 Red Hat, Inc.
  */
 
 #include "nm-default.h"
@@ -41,7 +41,8 @@ nms_keyfile_loaded_uuid_filename (const char *dirname,
 	char filename[250];
 
 	nm_assert (dirname && dirname[0] == '/');
-	nm_assert (uuid && nm_utils_is_uuid (uuid) && !strchr (uuid, '/'));
+	nm_assert (   nm_utils_is_uuid (uuid)
+	           && !strchr (uuid, '/'));
 
 	if (g_snprintf (filename,
 	                sizeof (filename),
@@ -167,7 +168,8 @@ nms_keyfile_loaded_uuid_write (const char *dirname,
 	gs_free char *full_filename = NULL;
 
 	nm_assert (dirname && dirname[0] == '/');
-	nm_assert (uuid && nm_utils_is_uuid (uuid) && !strchr (uuid, '/'));
+	nm_assert (   nm_utils_is_uuid (uuid)
+	           && !strchr (uuid, '/'));
 	nm_assert (!loaded_path || loaded_path[0] == '/');
 
 	full_filename_tmp = nms_keyfile_loaded_uuid_filename (dirname, uuid, TRUE);
@@ -294,22 +296,3 @@ nms_keyfile_utils_check_file_permissions (NMSKeyfileFiletype filetype,
 	NM_SET_OUT (out_st, st);
 	return TRUE;
 }
-
-/*****************************************************************************/
-
-const char *
-nms_keyfile_utils_get_path (void)
-{
-	static char *path = NULL;
-
-	if (G_UNLIKELY (!path)) {
-		path = nm_config_data_get_value (NM_CONFIG_GET_DATA_ORIG,
-		                                 NM_CONFIG_KEYFILE_GROUP_KEYFILE,
-		                                 NM_CONFIG_KEYFILE_KEY_KEYFILE_PATH,
-		                                 NM_CONFIG_GET_VALUE_STRIP | NM_CONFIG_GET_VALUE_NO_EMPTY);
-		if (!path)
-			path = g_strdup (""NM_KEYFILE_PATH_NAME_ETC_DEFAULT"");
-	}
-	return path;
-}
-

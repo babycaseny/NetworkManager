@@ -27,6 +27,8 @@
 
 #include "nm-connection.h"
 
+#include "nm-settings-connection.h"
+
 #define NM_TYPE_SETTINGS            (nm_settings_get_type ())
 #define NM_SETTINGS(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), NM_TYPE_SETTINGS, NMSettings))
 #define NM_SETTINGS_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass),  NM_TYPE_SETTINGS, NMSettingsClass))
@@ -67,6 +69,7 @@ NMSettings *nm_settings_get (void);
 #define NM_SETTINGS_GET (nm_settings_get ())
 
 NMSettings *nm_settings_new (void);
+
 gboolean nm_settings_start (NMSettings *self, GError **error);
 
 typedef void (*NMSettingsAddCallback) (NMSettings *settings,
@@ -93,10 +96,23 @@ NMSettingsConnection **nm_settings_get_connections_clone (NMSettings *self,
                                                           GCompareDataFunc sort_compare_func,
                                                           gpointer sort_data);
 
-NMSettingsConnection *nm_settings_add_connection (NMSettings *settings,
-                                                  NMConnection *connection,
-                                                  gboolean save_to_disk,
-                                                  GError **error);
+gboolean nm_settings_add_connection (NMSettings *settings,
+                                     NMConnection *connection,
+                                     gboolean save_to_disk,
+                                     NMSettingsConnection **out_sett_conn,
+                                     GError **error);
+
+gboolean nm_settings_update_connection (NMSettings *self,
+                                        NMSettingsConnection *sett_conn,
+                                        NMConnection *new_connection,
+                                        gboolean in_memory,
+                                        gboolean remove_from_disk,
+                                        GError **error);
+
+void nm_settings_delete_connection (NMSettings *self,
+                                    NMSettingsConnection *sett_conn,
+                                    gboolean remove_from_disk);
+
 NMSettingsConnection *nm_settings_get_connection_by_path (NMSettings *settings,
                                                           const char *path);
 

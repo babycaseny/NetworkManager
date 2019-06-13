@@ -469,9 +469,11 @@ mirror_8021x_connection (NMIwdManager *self,
 	if (!nm_connection_normalize (connection, NULL, NULL, NULL))
 		return NULL;
 
-	settings_connection = nm_settings_add_connection (priv->settings, connection,
-	                                                  FALSE, &error);
-	if (!settings_connection) {
+	if (!nm_settings_add_connection (priv->settings,
+	                                 connection,
+	                                 FALSE,
+	                                 &settings_connection,
+	                                 &error)) {
 		_LOGW ("failed to add a mirror NMConnection for IWD's Known Network '%s': %s",
 		       name, error->message);
 		g_error_free (error);
@@ -498,7 +500,7 @@ mirror_8021x_connection_take_and_delete (NMSettingsConnection *sett_conn)
 	/* If connection has not been saved since we created it
 	 * in interface_added it too can be removed now. */
 	if (NM_FLAGS_HAS (flags, NM_SETTINGS_CONNECTION_INT_FLAGS_NM_GENERATED))
-		nm_settings_connection_delete (sett_conn, NULL);
+		nm_settings_connection_delete (sett_conn);
 
 	g_object_unref (sett_conn);
 }

@@ -2064,13 +2064,15 @@ src_libNetworkManager_la_SOURCES = \
 	src/settings/nm-secret-agent.h \
 	src/settings/nm-settings-connection.c \
 	src/settings/nm-settings-connection.h \
+	src/settings/nm-settings-storage.c \
+	src/settings/nm-settings-storage.h \
 	src/settings/nm-settings-plugin.c \
 	src/settings/nm-settings-plugin.h \
 	src/settings/nm-settings.c \
 	src/settings/nm-settings.h \
 	\
-	src/settings/plugins/keyfile/nms-keyfile-connection.c \
-	src/settings/plugins/keyfile/nms-keyfile-connection.h \
+	src/settings/plugins/keyfile/nms-keyfile-storage.c \
+	src/settings/plugins/keyfile/nms-keyfile-storage.h \
 	src/settings/plugins/keyfile/nms-keyfile-plugin.c \
 	src/settings/plugins/keyfile/nms-keyfile-plugin.h \
 	src/settings/plugins/keyfile/nms-keyfile-reader.c \

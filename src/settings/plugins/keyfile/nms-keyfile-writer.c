@@ -337,8 +337,10 @@ _internal_write_connection (NMConnection *connection,
 
 gboolean
 nms_keyfile_writer_connection (NMConnection *connection,
-                               gboolean save_to_disk,
+                               const char *keyfile_dir,
+                               const char *profile_dir,
                                const char *existing_path,
+                               gboolean existing_path_read_only,
                                gboolean force_rename,
                                NMSKeyfileWriterAllowFilenameCb allow_filename_cb,
                                gpointer allow_filename_user_data,
@@ -347,21 +349,14 @@ nms_keyfile_writer_connection (NMConnection *connection,
                                gboolean *out_reread_same,
                                GError **error)
 {
-	const char *keyfile_dir;
-
-	if (save_to_disk)
-		keyfile_dir = nms_keyfile_utils_get_path ();
-	else
-		keyfile_dir = NM_KEYFILE_PATH_NAME_RUN;
-
 	return _internal_write_connection (connection,
 	                                   keyfile_dir,
-	                                   nms_keyfile_utils_get_path (),
+	                                   profile_dir,
 	                                   TRUE,
 	                                   0,
 	                                   0,
 	                                   existing_path,
-	                                   FALSE,
+	                                   existing_path_read_only,
 	                                   force_rename,
 	                                   allow_filename_cb,
 	                                   allow_filename_user_data,

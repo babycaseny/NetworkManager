@@ -238,11 +238,11 @@ restore_and_activate_connection (NMCheckpoint *self,
 		_LOGD ("rollback: adding connection %s again",
 		       nm_connection_get_uuid (dev_checkpoint->settings_connection));
 
-		connection = nm_settings_add_connection (NM_SETTINGS_GET,
-		                                         dev_checkpoint->settings_connection,
-		                                         TRUE,
-		                                         &local_error);
-		if (!connection) {
+		if (!nm_settings_add_connection (NM_SETTINGS_GET,
+		                                 dev_checkpoint->settings_connection,
+		                                 TRUE,
+		                                 &connection,
+		                                 &local_error)) {
 			_LOGD ("rollback: connection add failure: %s", local_error->message);
 			g_clear_error (&local_error);
 			return FALSE;
@@ -428,7 +428,7 @@ next_dev:
 			                            nm_settings_connection_get_uuid (con))) {
 				_LOGD ("rollback: deleting new connection %s",
 				       nm_settings_connection_get_uuid (con));
-				nm_settings_connection_delete (con, NULL);
+				nm_settings_connection_delete (con);
 			}
 		}
 	}

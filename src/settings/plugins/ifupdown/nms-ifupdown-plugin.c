@@ -237,7 +237,7 @@ initialize (SettingsPluginIfupdown *self)
 				_LOGD ("parse: replace connection \"%s\" (%s)",
 				       block->name,
 				       nm_settings_connection_get_uuid (NM_SETTINGS_CONNECTION (conn)));
-				nm_settings_connection_delete (NM_SETTINGS_CONNECTION (conn), NULL);
+				nm_settings_connection_delete (NM_SETTINGS_CONNECTION (conn));
 				g_hash_table_remove (priv->eni_ifaces, block->name);
 			}
 

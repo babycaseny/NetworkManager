@@ -235,7 +235,7 @@ pan_connection_check_create (NMBluezDevice *self)
 	 * which then already finds the suitable connection in priv->connections. This is confusing,
 	 * so block the signal. check_emit_usable will succeed after this function call returns. */
 	g_signal_handlers_block_by_func (priv->settings, cp_connection_added, self);
-	added = nm_settings_add_connection (priv->settings, connection, FALSE, &error);
+	nm_settings_add_connection (priv->settings, connection, FALSE, &added, &error);
 	g_signal_handlers_unblock_by_func (priv->settings, cp_connection_added, self);
 
 	if (added) {
@@ -1225,7 +1225,7 @@ dispose (GObject *object)
 	if (to_delete) {
 		nm_log_dbg (LOGD_BT, "bluez[%s] removing Bluetooth connection for NAP device: '%s' (%s)", priv->path,
 		            nm_settings_connection_get_id (to_delete), nm_settings_connection_get_uuid (to_delete));
-		nm_settings_connection_delete (to_delete, NULL);
+		nm_settings_connection_delete (to_delete);
 		g_object_unref (to_delete);
 	}
 

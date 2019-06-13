@@ -828,7 +828,7 @@ _delete_volatile_connection_do (NMManager *self,
 
 	_LOGD (LOGD_DEVICE, "volatile connection disconnected. Deleting connection '%s' (%s)",
 	       nm_settings_connection_get_id (connection), nm_settings_connection_get_uuid (connection));
-	nm_settings_connection_delete (connection, NULL);
+	nm_settings_connection_delete (connection);
 }
 
 /* Returns: whether to notify D-Bus of the removal or not */
@@ -2626,8 +2626,7 @@ get_existing_connection (NMManager *self,
 
 	nm_device_assume_state_reset (device);
 
-	added = nm_settings_add_connection (priv->settings, connection, FALSE, &error);
-	if (!added) {
+	if (!nm_settings_add_connection (priv->settings, connection, FALSE, &added, &error)) {
 		_LOG2W (LOGD_SETTINGS, device, "assume: failure to save generated connection '%s': %s",
 		       nm_connection_get_id (connection),
 		       error->message);
@@ -2740,7 +2739,7 @@ recheck_assume_connection (NMManager *self,
 
 			if (generated) {
 				_LOG2D (LOGD_DEVICE, device, "assume: deleting generated connection after assuming failed");
-				nm_settings_connection_delete (sett_conn, NULL);
+				nm_settings_connection_delete (sett_conn);
 			} else {
 				if (nm_device_sys_iface_state_get (device) == NM_DEVICE_SYS_IFACE_STATE_ASSUME)
 					nm_device_sys_iface_state_set (device, NM_DEVICE_SYS_IFACE_STATE_EXTERNAL);
@@ -5332,7 +5331,7 @@ fail:
 	                                     NM_ACTIVE_CONNECTION_STATE_REASON_UNKNOWN,
 	                                     error->message);
 	if (new_connection)
-		nm_settings_connection_delete (new_connection, NULL);
+		nm_settings_connection_delete (new_connection);
 	g_dbus_method_invocation_return_gerror (context, error);
 	nm_audit_log_connection_op (NM_AUDIT_OP_CONN_ADD_ACTIVATE,
 	                            NULL,

@@ -3981,7 +3981,7 @@ nm_keyfile_utils_ignore_filename (const char *filename, gboolean require_extensi
 
 	if (require_extension) {
 		if (   l <= NM_STRLEN (NM_KEYFILE_PATH_SUFFIX_NMCONNECTION)
-		    || !g_str_has_suffix (base, NM_KEYFILE_PATH_SUFFIX_NMCONNECTION))
+		    || !NM_STR_HAS_SUFFIX (base, NM_KEYFILE_PATH_SUFFIX_NMCONNECTION))
 			return TRUE;
 		return FALSE;
 	}
