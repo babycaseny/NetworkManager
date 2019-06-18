@@ -402,6 +402,25 @@ construct_device_dhcp_items (GPtrArray *items, int addr_family, GVariant *dhcp_c
 				                   four_or_six,
 				                   ucased,
 				                   g_variant_get_string (val, NULL));
+
+				/* MS Azure sends the server endpoint in the dhcp private
+				 * option 245. cloud-init searches the Azure server endpoint
+				 * value looking for the standard dhclient label used for
+				 * that option, which is "unknown_245".
+				 * The 11-dhclient script shipped with Fedora and RHEL dhcp
+				 * package converts our dispatcher environment vars to the
+				 * dhclient ones (new_<some_option>) and calls dhclient hook
+				 * scripts.
+				 * Let's make cloud-init happy and let's duplicate the dhcp
+				 * option 245 with the legacy name of the default dhclient
+				 * label.
+				 */
+				if ((   addr_family == AF_INET)
+				     && nm_streq (key, "private_245")) {
+					_items_add_printf (items,
+					                   "DHCP4_UNKNOWN_245=%s",
+					                   g_variant_get_string (val, NULL));
+				}
 			}
 		}
 		g_variant_unref (val);
